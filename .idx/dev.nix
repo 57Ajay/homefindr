@@ -15,14 +15,6 @@
       "rangav.vscode-thunder-client"
     ];
     workspace = {
-      # Runs when a workspace is first created with this `dev.nix` file
-      onCreate = {
-        npm-install = "npm ci --no-audit --prefer-offline --no-progress --timing";
-      };
-      # Runs when a workspace is (re)started
-      onStart= {
-        run-server = "npm run dev";
-      };
     };
   };
 }
