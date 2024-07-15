@@ -5,11 +5,14 @@ const createUser = async(req, res)=>{
     const {username, password} = req.body;
     if(!username || !password){
         return res.status(400).send("Username and password are required");
-    }
+    };
+    if(password.length < 6){
+        return res.status(400).send("Password must be at least 6 characters long");
+    };
     const existingUser = await User.findOne({username});
     if(existingUser){
         return res.status(409).send("User already exists");
-    }
+    };
     await User.create({username, password});
     res.status(201).send("User created successfully");
 };
