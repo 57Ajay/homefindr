@@ -1,20 +1,16 @@
 import { User } from "../models/user.schema";
 
-const createUser = async(req, res)=>{
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:4016803853.
-    const {username, password} = req.body;
-    if(!username || !password){
-        return res.status(400).send("Username and password are required");
+const getUserByUsername = async(req, res)=>{
+
+    const { username } = req.params;
+    if (!username) {
+        return res.status(400).send("Username is required");
     };
-    if(password.length < 6){
-        return res.status(400).send("Password must be at least 6 characters long");
+    const user = await User.find({ username }).select("-password").lean();
+    if (!user) {
+        return res.status(404).send("User not found");
     };
-    const existingUser = await User.findOne({username});
-    if(existingUser){
-        return res.status(409).send("User already exists");
-    };
-    await User.create({username, password});
-    res.status(201).send("User created successfully");
+    return res.status(200).send(user)
 };
 
-export {createUser};
+export {getUserByUsername};

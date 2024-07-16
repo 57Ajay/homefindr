@@ -1,16 +1,8 @@
 import { Router } from "express";
-import { createUser } from "../controllers/user.controller";
+import { getUserByUsername } from "../controllers/user.controller";
 
 const userRouter = Router();
 
-userRouter.get("/", (req, res) => {
-  res.send("Hello World! This is Ajay");
-});
-
-userRouter.get("/name", (req, res)=>{
-    res.send("My name is Ajay Upadhyay")
-});
-
-userRouter.post("/register", createUser);
+userRouter.get("/:username", getUserByUsername);
 
 export default userRouter;

@@ -20,14 +20,15 @@ const userSchema = new Schema({
     }
 }, {timestamps: true});
 
-userSchema.pre('save', async(next)=>{
-    if (this.isModified('password')){
-        const salt = bcrypt.genSaltSync(10);
-        this.password = await bcrypt.hash(this.password, salt);
+userSchema.pre('save', async function(next){
+    if(!this.isModified('password')){
+        return next();
     };
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
-userSchema.methods.isPasswordMatched = async(password)=>{
+userSchema.methods.isPasswordMatched = async function(password){
     if(this.password){
         return await bcrypt.compare(password, this.password);
     }
