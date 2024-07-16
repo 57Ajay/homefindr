@@ -6,11 +6,16 @@ const getUserByUsername = async(req, res)=>{
     if (!username) {
         return res.status(400).send("Username is required");
     };
-    const user = await User.find({ username }).select("-password").lean();
-    if (!user) {
-        return res.status(404).send("User not found");
+    try {
+        const user = await User.find({ username }).select("-password");
+        if (!user) {
+            return res.status(404).send("User not found");
+        };
+        return res.status(200).send(user);
+    } catch (error) {
+        console.error("Error Fetching User", error);
+        return res.status(500).send("Server Error")
     };
-    return res.status(200).send(user)
 };
 
 export {getUserByUsername};
