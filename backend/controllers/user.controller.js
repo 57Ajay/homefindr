@@ -1,21 +1,24 @@
 import { User } from "../models/user.schema";
+import asyncHandler from "../utils/asyncHandler";
+import ApiError from "../utils/apiError";
+import ApiResponse from "../utils/apiResponse";
 
-const getUserByUsername = async(req, res)=>{
-
-    const { username } = req.params;
-    if (!username) {
-        return res.status(400).send("Username is required");
+const getUserByUsername = asyncHandler( async(req, res, next)=>{
+    const {username} = req.params;
+    if (!username){
+        throw new ApiError("Username is required", 400);
     };
     try {
-        const user = await User.find({ username }).select("-password");
+        const user = await User.findOne({username}).select("-password");
         if (!user) {
-            return res.status(404).send("User not found");
+            throw new ApiError("User not found", 404);
         };
-        return res.status(200).send(user);
+        return res.send(
+            new ApiResponse("User found", user, 200)
+        );
     } catch (error) {
-        console.error("Error Fetching User", error);
-        return res.status(500).send("Server Error")
+        throw new ApiError("Error getting user", 500, error.message);
     };
-};
+});
 
 export {getUserByUsername};
