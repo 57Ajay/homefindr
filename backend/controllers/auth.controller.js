@@ -1,6 +1,6 @@
 import { User } from "../models/user.schema";
 
-export const signup = async(req, res)=>{
+export const signup = async(req, res, next)=>{
    const {username, email, password} = req.body;
    if (!username || !email || !password) {
     return res.status(400).send("All fields are required");
@@ -21,6 +21,7 @@ export const signup = async(req, res)=>{
     return res.status(201).send("User created successfully");
    } catch (error) {
     return res.status(500).send("Server error");
+    next(error.message);
    };
 
 };
