@@ -5,10 +5,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.route";
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://5173-idx-homefindr-1721045075219.cluster-bec2e4635ng44w7ed22sa22hes.cloudworkstations.dev',
-  'https://5173-idx-homefindr-1721045075219.cluster-bec2e4635ng44w7ed22sa22hes.cloudworkstations.dev',
-  'https://humble-spork-r4gr4vvpvr6vhq9w-5173.app.github.dev'
+  'http://localhost:5173'
 ];
 
 const app = express();

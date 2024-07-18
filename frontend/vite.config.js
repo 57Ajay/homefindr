@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://humble-spork-r4gr4vvpvr6vhq9w-3000.app.github.dev",
+        target: "http://localhost:3000",
         changeOrigin: true,
         secure: true, // Use true if your backend has a valid SSL certificate
       },

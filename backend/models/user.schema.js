@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose"; 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config({path: '.env'});
 
 const userSchema = new Schema({
     username: {
@@ -17,6 +19,9 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+    },
+    refreshToken: {
+        type: String
     }
 }, {timestamps: true});
 
@@ -37,6 +42,30 @@ userSchema.methods.isPasswordMatched = async function(password){
     };
 };
 
+userSchema.methods.generateAccessToken = async function(){
+    return await jwt.sign(
+        {
+            _id: this.id,
+            email: this.email,
+            username: this.username
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        }
+    );
+};
 
+userSchema.methods.generateRefreshToken = async function(){
+    return await jwt.sign(
+        {
+            _id: this.id,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+        }
+    );
+};
 
 export const User = model('User', userSchema);
