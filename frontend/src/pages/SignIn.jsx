@@ -1,44 +1,44 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import useSignInContext from '../context/useSignInContext';
 const SignIn = () => {
+    const { setSignInStatus } = useSignInContext();
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [signInStatus, setSignInStatus] = useState(false);
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
 
-    try {
-      const response = await fetch('/api/auth/sign-in', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
+        try {
+        const response = await fetch('/api/auth/sign-in', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(credentials),
+        });
 
-        const data = await response.json();
-        console.log(data.success);
-        setSignInStatus(data.success);
-        if (!response.ok) {
-            throw new Error(data.message || 'An error occurred');
+            const data = await response.json();
+            console.log(data.success);
+            setSignInStatus(data.success);
+            if (!response.ok) {
+                throw new Error(data.message || 'An error occurred');
+            }
+
+        setSuccess(data.message);
+        navigate("/")
+        } catch (err) {
+        setError(err.message);
         }
-
-      setSuccess(data.message);
-      navigate("/")
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+    };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

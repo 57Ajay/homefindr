@@ -9,8 +9,8 @@ const generateAccessAndRefreshToken = async(userId)=>{
         if(!user){
             return new ApiResponse("User not Found", null, 404);
         };
-        const accessToken = user.generateAccessToken();
-        const refreshToken = user.generateRefreshToken();
+        const accessToken = await user.generateAccessToken();
+        const refreshToken = await user.generateRefreshToken();
         user.refreshToken = refreshToken;
         user.save({validateBeforeSave: false});
         return { accessToken, refreshToken };
@@ -20,68 +20,125 @@ const generateAccessAndRefreshToken = async(userId)=>{
 };
 
 const signup = asyncHandler(async(req, res)=>{
-   const {username, email, password} = req.body;
-   if (!username || !email || !password) {
-    return new ApiResponse("Username, email, and password are required", 400);
-   };
+    const {username, email, password} = req.body;
+    if (!username || !email || !password) {
+     return res.status(400).json(new ApiResponse("Username, email, and password are required", null, 400));
+    }
+ 
+    if (password.length < 6) {
+     return res.status(400).json(new ApiResponse("Password must be at least 6 characters long", null, 400));
+    }
+    
+    const existingUser = await User.findOne({$or: [{username}, {email}]});
+    if (existingUser) {
+     return res.status(409).json(new ApiResponse(
+       existingUser.username === username ? "Username already exists" : "Email already exists",
+       null,
+       409
+     ));
+    }
+ 
+    try {
+     const user = await User.create({username, email, password});
+     const safeUser = user.toObject();
+     delete safeUser.password;
+     delete safeUser.refreshToken;
+     return res.status(201).json(new ApiResponse("User created successfully", safeUser, 201));
+    } catch (error) {
+     return res.status(500).json(new ApiResponse("Error creating user", null, 500));
+    }
+ });
 
-   if (password.length < 6) {
-    return new ApiResponse("Password must be at least 6 characters long", 400);
-   };
-   
-   const existingUser = await User.findOne({username});
-   if (existingUser) {
-    throw new ApiError("Username already exists", 409);
-   };
-   const existingEmail = await User.findOne({email});
-   if (existingEmail) {
-    throw new ApiError("Email already exists", 409);
-   };
-
-   try {
-    // const newUser = new user({username, email, password});
-    // await newUser.save();
-    await User.create({username, email, password});
-    return res.send(
-        new ApiResponse("User created successfully", null, 201)
-    )
-   } catch (error) {
-    throw new ApiError("Error creating user", 500, error.message);
-   };
-   
-});
-
-const signIn = asyncHandler(async(req, res)=>{
+ const signIn = asyncHandler(async(req, res)=>{
     const {username, email, password} = req.body;
     if ((!username && !email) || !password){
-        throw new ApiError("Username or email and password are required", 400);
-    };
+        return res.status(400).json(new ApiResponse("Username or email and password are required", null, 400));
+    }
     const user = await User.findOne({$or : [{username}, {email}]});
     if (!user) {
-        throw new ApiError("User not found", 404);
-    };
+        return res.status(404).json(new ApiResponse("User not found", null, 404));
+    }
     const isPasswordMatched = await user.isPasswordMatched(password);
     if (!isPasswordMatched) {
-        throw new ApiError("Invalid password", 401);
-    };
+        return res.status(401).json(new ApiResponse("Invalid password", null, 401));
+    }
     try {
-        const { accessToken, refreshToken } = generateAccessAndRefreshToken(user._id);
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-        return res.cookie("accessToken", accessToken, {
+        const cookieOptions = {
             httpOnly: true,
-            secure: true, 
-            maxAge: 1000 * 60 * 60 * 24, // 1 days
-        }).cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: true, 
-            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-        }).send(
-            new ApiResponse("User signed in successfully", loggedInUser, 200)
-        )
+            secure: process.env.NODE_ENV === 'production', 
+            sameSite: 'lax',
+            path: '/'
+        };
+
+        return res.status(200)
+            .cookie("accessToken", accessToken, {
+                ...cookieOptions,
+                maxAge: 1000 * 60 * 60 * 24, // 1 day
+            })
+            .cookie("refreshToken", refreshToken, {
+                ...cookieOptions,
+                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            })
+            .json(new ApiResponse("User signed in successfully", loggedInUser, 200));
     } catch (error) {
-        throw new ApiError("Error signing in", 500, error.message);
-    };
+        console.error('Error in signIn:', error);
+        return res.status(500).json(new ApiResponse("Error signing in", null, 500));
+    }
 });
 
-export {signup, signIn};
+const signOut = asyncHandler(async (req, res) => {
+    try {
+        // Log the user object for debugging
+        console.log('User object in signOut:', req.user);
+
+        if (!req.user || !req.user._id) {
+            throw new ApiError("User not authenticated", 401);
+        }
+
+        // Find the user and update
+        const user = await User.findByIdAndUpdate(
+            req.user._id,
+            { $unset: { refreshToken: 1 } },
+            { new: true }
+        );
+
+        if (!user) {
+            throw new ApiError("User not found", 404);
+        }
+
+        // Clear cookies
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        };
+
+        res.clearCookie("accessToken", cookieOptions);
+        res.clearCookie("refreshToken", cookieOptions);
+
+        // Log successful logout
+        console.log(`User ${user._id} successfully logged out`);
+
+        return res.status(200).json(
+            new ApiResponse("Logout successful", null, 200)
+        );
+    } catch (error) {
+        console.error('Error in signOut:', error);
+        
+        if (error instanceof ApiError) {
+            return res.status(error.statusCode).json(
+                new ApiResponse(error.message, null, error.statusCode)
+            );
+        }
+
+        return res.status(500).json(
+            new ApiResponse("Internal Server Error", null, 500)
+        );
+    }
+});
+
+
+export {signup, signIn, signOut};
