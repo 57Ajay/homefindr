@@ -25,7 +25,7 @@ const SignUp = () => {
         e.preventDefault();
         setIsLoading(true); // Show loading indicator
         try {
-          const res = await fetch("/api/auth/signup", {
+          const res = await fetch("/api/auth/sign-up", {
             method: 'POST',
             credentials: 'include',
             headers: {

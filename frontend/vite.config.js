@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "https://3000-idx-homefindr-1721045075219.cluster-bec2e4635ng44w7ed22sa22hes.cloudworkstations.dev",
+        target: "https://humble-spork-r4gr4vvpvr6vhq9w-3000.app.github.dev",
         changeOrigin: true,
         secure: true, // Use true if your backend has a valid SSL certificate
       },
