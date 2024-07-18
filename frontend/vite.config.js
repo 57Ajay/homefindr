@@ -7,8 +7,8 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://3000-idx-homefindr-1721045075219.cluster-bec2e4635ng44w7ed22sa22hes.cloudworkstations.dev",
-        changeOrigin: true, // Add this line 
-        secure: false, // You might not need this if your backend has a valid SSL certificate
+        changeOrigin: true,
+        secure: true, // Use true if your backend has a valid SSL certificate
       },
     },
   },

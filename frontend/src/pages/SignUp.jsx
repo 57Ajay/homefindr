@@ -25,7 +25,14 @@ const SignUp = () => {
         e.preventDefault();
         setIsLoading(true); // Show loading indicator
         try {
-          const res = await fetch("/api/auth/sign-up", { /* ... your fetch code ... */ });
+          const res = await fetch("/api/auth/signup", {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          });
           const data = await res.json();
           if (!res.ok) { // Handle errors
             throw new Error(data.message || 'Sign up failed');
