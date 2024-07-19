@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useSignInContext from '../context/useSignInContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice';
+
 
 const SignIn = () => {
     const { setSignInStatus } = useSignInContext();
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector((state)=> state.user);
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ identifier: '', password: '' });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
@@ -21,10 +24,8 @@ const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
-
         try {
+            dispatch(signInStart());
             const response = await fetch('/api/auth/sign-in', {
                 method: 'POST',
                 credentials: 'include',
@@ -42,13 +43,13 @@ const SignIn = () => {
             console.log(data.success);
             setSignInStatus(data.success);
             if (!response.ok) {
+                dispatch(signInFailure(data.message));
                 throw new Error(data.message || 'An error occurred');
             }
-
-            setSuccess(data.message);
+            dispatch(signInSuccess(data))
             navigate("/")
         } catch (err) {
-            setError(err.message);
+            dispatch(signInFailure(err.message));
         }
     };
 
@@ -57,7 +58,7 @@ const SignIn = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
                 <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
                 {error && <div className="bg-red-100 text-red-700 p-3 mb-4 rounded">{error}</div>}
-                {success && <div className="bg-green-100 text-green-700 p-3 mb-4 rounded">{success}</div>}
+                {loading && <div className="bg-green-100 text-green-700 p-3 mb-4 rounded">Signing in</div>}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="identifier" className="block text-gray-700">Username or Email</label>
