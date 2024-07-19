@@ -63,6 +63,7 @@ const signup = asyncHandler(async(req, res)=>{
         return res.status(401).json(new ApiResponse("Invalid password", null, 401));
     }
     try {
+        console.log(user._id);
         const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
         const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -141,55 +142,42 @@ const signOut = asyncHandler(async (req, res) => {
 });
 
 const google = asyncHandler(async (req, res, next) => {
+    const { username, email, avatar } = req.body;
+    if (!username || !email){
+        throw new ApiError("No username or email found", 404);
+    };
+    const user = await User.findOne({email});
     try {
-        const cookieOptions = {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
-        };
+        if (user){
+            const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
+            const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
-        const user = await User.findOne({ email: req.body.email });
-        console.log(user._id);
-        const { accessToken, refreshToken } = generateAccessAndRefreshToken(user._id);
-
-        if (user) {
-            const { password: pass, ...rest } = user._doc;
-            return res.status(200)
-                .cookie("accessToken", accessToken, {
-                    ...cookieOptions,
-                    maxAge: 1000 * 60 * 60 * 24, // 1 day
-                })
-                .cookie("refreshToken", refreshToken, {
-                    ...cookieOptions,
-                    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-                })
-                .json(new ApiResponse("User signed in successfully", rest, 200));
-        } else {
-            const generatedPassword = Math.random().toString(36).slice(-8);
-            const newUser = new User({
-                username: req.body.username.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8),
-                email: req.body.email,
-                password: generatedPassword,
-                avatar: req.body.photo,
-                refreshToken: refreshToken,
-            });
-            await newUser.save();
-            const { password: pass, ...rest } = newUser._doc;
+            const cookieOptions = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict'
+            };
 
             return res.status(200)
-                .cookie("accessToken", accessToken, {
-                    ...cookieOptions,
-                    maxAge: 1000 * 60 * 60 * 24, // 1 day
-                })
-                .cookie("refreshToken", refreshToken, {
-                    ...cookieOptions,
-                    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-                })
-                .json(new ApiResponse("User signed in successfully", rest, 200));
+            .cookie("accessToken", accessToken, {
+                ...cookieOptions,
+                maxAge: 1000 * 60 * 60 * 24, // 1 day
+            })
+            .cookie("refreshToken", refreshToken, {
+                ...cookieOptions,
+                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            }).json(new ApiResponse("User signed in successfully", loggedInUser, 200));
+        }else{
+            const generatePassword = Math.random().toString(36).slice(-8);
+            const user = await User.create({username: username.replace(/\s+/g, '')+Math.random().toString(36).slice(-8), email, password: generatePassword, avatar});
+            const safeUser = user.toObject();
+            delete safeUser.password;
+            delete safeUser.refreshToken;
+            return res.status(201).json(new ApiResponse("User created successfully", safeUser, 201));
         }
     } catch (error) {
         next(error);
-    }
+    };
 });
 
 export {signup, signIn, signOut, google};
