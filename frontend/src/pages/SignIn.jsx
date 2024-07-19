@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import useSignInContext from '../context/useSignInContext';
 import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice';
 
 
 const SignIn = () => {
-    const { setSignInStatus } = useSignInContext();
     const dispatch = useDispatch();
     const { loading, error } = useSelector((state)=> state.user);
     const navigate = useNavigate();
@@ -40,8 +38,7 @@ const SignIn = () => {
             });
 
             const data = await response.json();
-            console.log(data.success);
-            setSignInStatus(data.success);
+            // console.log(data.success);
             if (!response.ok) {
                 dispatch(signInFailure(data.message));
                 throw new Error(data.message || 'An error occurred');

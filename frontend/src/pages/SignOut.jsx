@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useSignInContext from '../context/useSignInContext';
+import { useDispatch } from 'react-redux';
+import { signOutSuccess } from '../redux/user/userSlice';
+
 
 const SignOut = () => {
     const navigate = useNavigate();
-    const { setSignInStatus } = useSignInContext();
     const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const handleSignOut = async () => {
         setIsLoading(true);
@@ -18,7 +20,7 @@ const SignOut = () => {
                 }
             });
             if (response.ok) {
-                setSignInStatus(false);
+                dispatch(signOutSuccess());
                 navigate('/sign-in');
             } else {
                 console.error('Failed to sign out');

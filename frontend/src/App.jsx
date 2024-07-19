@@ -6,14 +6,11 @@ import About from "./pages/About";
 import Profile from "./pages/Profile"
 import SignIn from "./pages/SignIn";
 import Header from "./pages/Header";
-import SignInContextProvider from "./context/SignInContext";
 import SignOut from "./pages/SignOut";
-
 const App = () => {
 
   return (
     <BrowserRouter>
-    <SignInContextProvider>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -23,7 +20,6 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/sign-out" element={<SignOut />} />
       </Routes>
-    </SignInContextProvider>
     </BrowserRouter>
   )
 };
