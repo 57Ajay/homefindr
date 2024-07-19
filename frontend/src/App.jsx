@@ -5,7 +5,7 @@ import SignUp from "./pages/SignUp";
 import About from "./pages/About";
 import Profile from "./pages/Profile"
 import SignIn from "./pages/SignIn";
-import Header from "./pages/Header";
+import Header from "./components/Header";
 import SignOut from "./pages/SignOut";
 const App = () => {
 

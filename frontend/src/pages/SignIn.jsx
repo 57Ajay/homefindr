@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice';
+import OAuth from '../components/OAuth';
 
 
 const SignIn = () => {
@@ -96,6 +97,7 @@ const SignIn = () => {
                     >
                         Sign In
                     </button>
+                    <OAuth />
                 </form>
                 <div className='flex flex-row gap-2 mt-4'>
                     <p>Don`t have an account?</p>

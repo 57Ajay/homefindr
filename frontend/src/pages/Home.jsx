@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
-  console.log(currentUser);
+  // console.log(currentUser);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">

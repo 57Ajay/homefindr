@@ -140,5 +140,56 @@ const signOut = asyncHandler(async (req, res) => {
     }
 });
 
+const google = asyncHandler(async (req, res, next) => {
+    try {
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        };
 
-export {signup, signIn, signOut};
+        const user = await User.findOne({ email: req.body.email });
+        console.log(user._id);
+        const { accessToken, refreshToken } = generateAccessAndRefreshToken(user._id);
+
+        if (user) {
+            const { password: pass, ...rest } = user._doc;
+            return res.status(200)
+                .cookie("accessToken", accessToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24, // 1 day
+                })
+                .cookie("refreshToken", refreshToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+                })
+                .json(new ApiResponse("User signed in successfully", rest, 200));
+        } else {
+            const generatedPassword = Math.random().toString(36).slice(-8);
+            const newUser = new User({
+                username: req.body.username.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-8),
+                email: req.body.email,
+                password: generatedPassword,
+                avatar: req.body.photo,
+                refreshToken: refreshToken,
+            });
+            await newUser.save();
+            const { password: pass, ...rest } = newUser._doc;
+
+            return res.status(200)
+                .cookie("accessToken", accessToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24, // 1 day
+                })
+                .cookie("refreshToken", refreshToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+                })
+                .json(new ApiResponse("User signed in successfully", rest, 200));
+        }
+    } catch (error) {
+        next(error);
+    }
+});
+
+export {signup, signIn, signOut, google};

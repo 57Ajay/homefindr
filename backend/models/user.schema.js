@@ -20,6 +20,10 @@ const userSchema = new Schema({
         required: true,
         unique: true,
     },
+    avatar: {
+        type: String,
+        default: ""
+    },
     refreshToken: {
         type: String
     }
