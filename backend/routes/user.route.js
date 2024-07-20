@@ -1,10 +1,8 @@
 import { Router } from "express";
-import { getUserByUsername } from "../controllers/user.controller";
-
+import { updateUserProfile } from "../controllers/user.controller";
+import verifyToken from "../middlewares/auth.middleware";
 const userRouter = Router();
 
-userRouter.get("/:username", getUserByUsername);
-userRouter.get("/", (req, res) => {
-    res.send("Hello from user router");
-});
+userRouter.patch("/update-user", verifyToken, updateUserProfile);
+
 export default userRouter;

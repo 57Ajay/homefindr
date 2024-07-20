@@ -1,5 +1,4 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:3996686804.
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
 import About from "./pages/About";
@@ -7,9 +6,10 @@ import Profile from "./pages/Profile"
 import SignIn from "./pages/SignIn";
 import Header from "./components/Header";
 import SignOut from "./pages/SignOut";
-import PrivateRoute from "./components/PrivateRoute";
-const App = () => {
+import VerifyAuth from "./components/VerifyAuth";
+import UpdateProfile from "./pages/UpdateProfile";
 
+const App = () => {
   return (
     <BrowserRouter>
       <Header />
@@ -18,9 +18,8 @@ const App = () => {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/profile" element={<Profile />} />
-        </Route>
+        <Route path="/profile" element={<VerifyAuth><Profile /></VerifyAuth>} />
+        <Route path="/update-profile" element={<VerifyAuth><UpdateProfile /></VerifyAuth>} />
         <Route path="/sign-out" element={<SignOut />} />
       </Routes>
     </BrowserRouter>

@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { LogOut, Mail, User, Phone, MapPin } from 'lucide-react';
+import { LogOut, Mail, User, Phone, MapPin, Edit, Trash2 } from 'lucide-react';
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
@@ -26,7 +27,7 @@ const Profile = () => {
               )}
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">{currentUser.data.username}</h2>
-                <p className="text-sm text-gray-500">Member since {new Date(currentUser.data.createdAt).toLocaleDateString()}</p> 
+                <p className="text-sm text-gray-500">Joined On {new Date(currentUser.data.createdAt).toLocaleDateString()}</p> 
               </div>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -49,12 +50,24 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="px-4 py-4 sm:px-6 bg-gray-50">
-          <Link to={"/sign-out"}
+        <div className="px-4 py-4 sm:px-6 bg-gray-50 flex flex-wrap gap-4">
+          <Link to="/update-profile"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <Edit className="w-5 h-5 mr-2" />
+            Update Profile
+          </Link>
+          <Link to="/sign-out"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
             <LogOut className="w-5 h-5 mr-2" />
             Sign Out
+          </Link>
+          <Link to="/delete-account"
+            className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            <Trash2 className="w-5 h-5 mr-2" />
+            Delete Account
           </Link>
         </div>
       </div>
