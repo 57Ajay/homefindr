@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import SignOut from "./pages/SignOut";
 import VerifyAuth from "./components/VerifyAuth";
 import UpdateProfile from "./pages/UpdateProfile";
+import DeleteUserProfile from "./pages/DeleteUserProfile";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/profile" element={<VerifyAuth><Profile /></VerifyAuth>} />
         <Route path="/update-profile" element={<VerifyAuth><UpdateProfile /></VerifyAuth>} />
+        <Route path="/delete-account" element={<VerifyAuth><DeleteUserProfile /></VerifyAuth>} />
         <Route path="/sign-out" element={<SignOut />} />
       </Routes>
     </BrowserRouter>

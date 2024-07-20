@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const accessToken = localStorage.getItem("accessToken");
   // console.log(currentUser);
 
   return (
@@ -10,7 +11,7 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Welcome Home
         </h1>
-        {currentUser && currentUser.data && (
+        {currentUser && accessToken && currentUser.data && (
           <p className="text-xl text-center text-gray-600">
             Hello,{' '}
             <span className="font-semibold text-blue-600">
