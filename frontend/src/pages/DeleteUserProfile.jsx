@@ -34,7 +34,8 @@ const DeleteUserProfile = () => {
 
         // Short delay before navigation to ensure state updates
         setTimeout(() => {
-          navigate("/sign-in");
+            window.location.reload();
+            navigate("/sign-in");
         }, 1000);
       } else {
         const errorData = await response.json();

@@ -41,7 +41,7 @@ const UpdateProfile = () => {
         setError(errorData?.message || 'Failed to update profile');
       }
     } catch (error) {
-      setError('An error occurred while updating the profile, consider changing username or email');
+      setError('An error occurred while updating the profile, consider changing username or email or consider Resign-in');
     } finally {
       setLoading(false);
     }

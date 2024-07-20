@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { LogOut, Mail, User, Phone, MapPin, Edit, Trash2 } from 'lucide-react';
+import { LogOut, Mail, User, Phone, MapPin, Edit, Trash2, LogIn } from 'lucide-react';
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -56,6 +56,12 @@ const Profile = () => {
           >
             <Edit className="w-5 h-5 mr-2" />
             Update Profile
+          </Link>
+          <Link to="/sign-in"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            <LogIn className="w-5 h-5 mr-2" />
+            ReSign in
           </Link>
           <Link to="/sign-out"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
