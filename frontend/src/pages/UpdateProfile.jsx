@@ -1,20 +1,23 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../firebase';
 
 const UpdateProfile = () => {
+  const fileRef = useRef(null);
   const { currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     username: currentUser?.data?.username || '',
     email: currentUser?.data?.email || '',
-    avatar: currentUser?.data?.avatar || "",
     password: '',
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const [file, setFile] = useState(undefined);
+  const [fileUploadPercentage, setFileUploadPercentage] = useState(0);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -46,12 +49,46 @@ const UpdateProfile = () => {
       setLoading(false);
     }
   };
-  console.log(formData);
+  console.log(file);
+
+  const handleFileUpload = (file)=>{
+    const storage = getStorage(app);
+    const fileName = new Date().getTime()+file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      'state_changed',
+      (snapshot)=>{
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes)*100;
+        setFileUploadPercentage(Math.round(progress));
+        console.log(fileUploadPercentage);
+      } 
+    );
+  };
+
+
+  useEffect(()=>{
+    if(file){
+      handleFileUpload(file);
+    }
+  }, [file]);
+  // allow read;
+  // allow write : if
+  // request.resource.size < 2 * 1024 * 1024 &&
+  // request.resource.contentType.matches("image/.*")
+
   return (
     <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-md"> 
-      <h1 className="text-2xl font-semibold mb-4">Update Profile</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-center">Update Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+
+    <input type='file' ref={fileRef} hidden accept='image/.*'
+    onChange={(e)=>setFile(e.target.files[0])} />
+      <div className="flex items-center justify-center">
+        <img onClick={()=>fileRef.current.click()} src={currentUser.data.avatar} alt="Profile-Photo" className='rounded-full w-28 cursor-pointer transition-transform duration-300 hover:scale-110' />
+      </div>
+
         <div>
           <label htmlFor="username" className="block text-gray-700">Username</label>
           <input 
@@ -72,18 +109,6 @@ const UpdateProfile = () => {
             onChange={handleChange}
             className="w-full p-2 border rounded-md" 
           />
-        </div>
-
-        <div>
-          <label htmlFor="avatar" className="block text-gray-700">avatar</label>
-          <input 
-            type="url" 
-            id="avatar" 
-            value={formData.avatar} 
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md" 
-          />
-          <p className='text-red-700 break-words'>To update the profile enter valid link of your image from a cloud provider (ex. google photos).</p>
         </div>
 
         <div>

@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/profile" element={<VerifyAuth><Profile /></VerifyAuth>} />
         <Route path="/update-profile" element={<VerifyAuth><UpdateProfile /></VerifyAuth>} />
         <Route path="/delete-account" element={<VerifyAuth><DeleteUserProfile /></VerifyAuth>} />
-        <Route path="/sign-out" element={<SignOut />} />
+        <Route path="/sign-out" element={<VerifyAuth><SignOut /></VerifyAuth>} />
       </Routes>
     </BrowserRouter>
   )
