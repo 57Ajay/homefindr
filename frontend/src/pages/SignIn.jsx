@@ -5,13 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
 
-
 const SignIn = () => {
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state)=> state.user);
+    const { loading, error } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ identifier: '', password: '' });
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(true);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -39,13 +38,12 @@ const SignIn = () => {
             });
 
             const data = await response.json();
-            // console.log(data.success);
             if (!response.ok) {
                 dispatch(signInFailure(data.message));
                 throw new Error(data.message || 'An error occurred');
             }
-            dispatch(signInSuccess(data))
-            navigate("/")
+            dispatch(signInSuccess(data));
+            navigate("/");
         } catch (err) {
             dispatch(signInFailure(err.message));
         }
@@ -85,12 +83,13 @@ const SignIn = () => {
                             <button
                                 type="button"
                                 onClick={togglePasswordVisibility}
-                                className="absolute inset-y-0 right-0 flex items-center px-3 mt-2"
+                                className="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer"
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
                         </div>
                     </div>
+
                     <button
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"

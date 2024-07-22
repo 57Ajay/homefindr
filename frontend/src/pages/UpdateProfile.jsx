@@ -2,8 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { Eye, EyeOff } from 'lucide-react';
+import { updateUser } from '../redux/user/userSlice';
 
 const UpdateProfile = () => {
+
   const fileRef = useRef(null);
   const { currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
@@ -14,12 +17,18 @@ const UpdateProfile = () => {
     password: '',
     avatar: currentUser?.data?.avatar || ""
   });
+
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(undefined);
   const [fileUploadPercentage, setFileUploadPercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -41,6 +50,7 @@ const UpdateProfile = () => {
       if (response.ok) {
         const updatedUser = await response.json();
         dispatch({ type: 'UPDATE_USER', payload: updatedUser });
+        dispatch(updateUser(updatedUser));
         setSuccess('Profile updated successfully!');
       } else {
         const errorData = await response.json();
@@ -134,21 +144,28 @@ const UpdateProfile = () => {
           />
         </div>
 
-        <div>
+        <div className='relative'>
           <label htmlFor="password" className="block text-gray-700">New Password (optional)</label>
           <input 
-            type="password" 
+            type={showPassword ? "text" : "password"}
             id="password" 
             value={formData.password} 
             onChange={handleChange}
-            className="w-full p-2 border rounded-md" 
+            className="mt-2 p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10" 
           />
+          <button
+            type="button"
+            onClick={togglePasswordVisibility}
+            className="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer mt-7"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
 
         <button 
           type="submit" 
           disabled={loading}
-          className={`w-full py-2 rounded-md text-white ${loading ? 'bg-blue-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+          className={`w-full py-2 rounded-md text-white ${loading ? 'bg-blue-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} mt-2`}
         >
           {loading ? 'Updating...' : 'Update Profile'}
         </button>

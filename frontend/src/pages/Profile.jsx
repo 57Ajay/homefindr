@@ -2,8 +2,14 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LogOut, Mail, User, Phone, MapPin, Edit, Trash2, LogIn } from 'lucide-react';
 
+
 const Profile = () => {
+ 
   const { currentUser } = useSelector((state) => state.user);
+
+  if (!currentUser || !currentUser.data) {
+    return <div>Loading...</div>; // Handle loading or no data state
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
