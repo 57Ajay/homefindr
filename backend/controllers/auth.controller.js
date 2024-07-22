@@ -140,6 +140,7 @@ const signOut = asyncHandler(async (req, res) => {
         );
     }
 });
+
 const google = asyncHandler(async (req, res, next) => {
     const { username, email, avatar } = req.body;
     if (!username || !email) {
@@ -186,4 +187,4 @@ const google = asyncHandler(async (req, res, next) => {
 });
 
 
-export {signup, signIn, signOut, google};
+export {signup, signIn, signOut, google, generateAccessAndRefreshToken};

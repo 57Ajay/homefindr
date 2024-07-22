@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 
 const UpdateProfile = () => {
@@ -12,12 +12,15 @@ const UpdateProfile = () => {
     username: currentUser?.data?.username || '',
     email: currentUser?.data?.email || '',
     password: '',
+    avatar: currentUser?.data?.avatar || ""
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(undefined);
   const [fileUploadPercentage, setFileUploadPercentage] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -44,50 +47,70 @@ const UpdateProfile = () => {
         setError(errorData?.message || 'Failed to update profile');
       }
     } catch (error) {
-      setError('An error occurred while updating the profile, consider changing username or email or consider Resign-in');
+      setError('An error occurred while updating the profile. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  console.log(file);
 
-  const handleFileUpload = (file)=>{
+  const handleFileUpload = (file) => {
     const storage = getStorage(app);
-    const fileName = new Date().getTime()+file.name;
+    const fileName = new Date().getTime() + file.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, file);
+
     uploadTask.on(
       'state_changed',
-      (snapshot)=>{
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes)*100;
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadPercentage(Math.round(progress));
-        console.log(fileUploadPercentage);
-      } 
+      },
+      (error) => {
+        setFileUploadError(true);
+        console.error('Upload error:', error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+          setFormData({ ...formData, avatar: downloadUrl });
+          setSuccess('Image uploaded successfully!');
+          setFileUploadPercentage(0);
+        });
+      }
     );
   };
 
-
-  useEffect(()=>{
-    if(file){
+  useEffect(() => {
+    if (file) {
       handleFileUpload(file);
     }
   }, [file]);
-  // allow read;
-  // allow write : if
-  // request.resource.size < 2 * 1024 * 1024 &&
-  // request.resource.contentType.matches("image/.*")
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-md"> 
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
       <h1 className="text-2xl font-semibold mb-4 text-center">Update Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
-    <input type='file' ref={fileRef} hidden accept='image/.*'
-    onChange={(e)=>setFile(e.target.files[0])} />
-      <div className="flex items-center justify-center">
-        <img onClick={()=>fileRef.current.click()} src={currentUser.data.avatar} alt="Profile-Photo" className='rounded-full w-28 cursor-pointer transition-transform duration-300 hover:scale-110' />
-      </div>
+        <div className="flex flex-col items-center justify-center">
+          <input
+            type='file'
+            ref={fileRef}
+            hidden
+            accept='image/*'
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          <img
+            onClick={() => fileRef.current.click()}
+            src={formData.avatar || currentUser.data.avatar}
+            alt="Profile-Photo"
+            className='rounded-full w-28 h-28 object-cover cursor-pointer transition-transform duration-300 hover:scale-110'
+          />
+          {fileUploadPercentage > 0 && fileUploadPercentage < 100 && (
+            <p className="text-sm text-gray-500 mt-2">Upload progress: {fileUploadPercentage}%</p>
+          )}
+          {fileUploadError && (
+            <p className="text-sm text-red-500 mt-2">Error uploading file. Please try again.</p>
+          )}
+        </div>
 
         <div>
           <label htmlFor="username" className="block text-gray-700">Username</label>
