@@ -65,34 +65,34 @@ const UpdateProfile = () => {
     }
   };
 
-  const handleFileUpload = (file) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + file.name;
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFileUploadPercentage(Math.round(progress));
-      },
-      (error) => {
-        setFileUploadError(true);
-        console.error('Upload error:', error);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
-          setFormData({ ...formData, avatar: downloadUrl });
-          setSuccess('Image uploaded successfully!');
-          setFileUploadPercentage(0);
-        });
-      }
-    );
-  };
-
   useEffect(() => {
     if (file) {
+      const handleFileUpload = (file) => {
+        const storage = getStorage(app);
+        const fileName = new Date().getTime() + file.name;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            setFileUploadPercentage(Math.round(progress));
+          },
+          (error) => {
+            setFileUploadError(true);
+            console.error('Upload error:', error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadUrl) => {
+              setFormData(prev => ({ ...prev, avatar: downloadUrl }));
+              setSuccess('Image uploaded successfully!');
+              setFileUploadPercentage(0);
+            });
+          }
+        );
+      };
+
       handleFileUpload(file);
     }
   }, [file]);
