@@ -1,11 +1,16 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { LogOut, Mail, User, Phone, MapPin, Edit, Trash2, LogIn } from 'lucide-react';
+import { updateUserSuccess } from '../redux/user/userSlice';
 
 
 const Profile = () => {
- 
+  
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+
+  dispatch(updateUserSuccess(currentUser));
 
   if (!currentUser || !currentUser.data) {
     return <div>Loading...</div>; // Handle loading or no data state

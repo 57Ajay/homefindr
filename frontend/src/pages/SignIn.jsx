@@ -10,7 +10,7 @@ const SignIn = () => {
     const { loading, error } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ identifier: '', password: '' });
-    const [showPassword, setShowPassword] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });

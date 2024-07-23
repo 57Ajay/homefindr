@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { Eye, EyeOff } from 'lucide-react';
-import { updateUser } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure } from '../redux/user/userSlice';
 
 const UpdateProfile = () => {
 
@@ -41,6 +41,7 @@ const UpdateProfile = () => {
     setSuccess(null);
 
     try {
+      dispatch(updateUserStart())
       const response = await fetch('/api/user/update-user', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -49,14 +50,15 @@ const UpdateProfile = () => {
 
       if (response.ok) {
         const updatedUser = await response.json();
-        dispatch({ type: 'UPDATE_USER', payload: updatedUser });
-        dispatch(updateUser(updatedUser));
+        dispatch(updateUserSuccess(updatedUser));
         setSuccess('Profile updated successfully!');
       } else {
         const errorData = await response.json();
+        dispatch(updateUserFailure(errorData.message));
         setError(errorData?.message || 'Failed to update profile');
       }
     } catch (error) {
+      dispatch(updateUserFailure(error.message));
       setError('An error occurred while updating the profile. Please try again.');
     } finally {
       setLoading(false);

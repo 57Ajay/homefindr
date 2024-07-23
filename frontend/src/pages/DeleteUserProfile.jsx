@@ -28,8 +28,8 @@ const DeleteUserProfile = () => {
         const data = await response.json();
         // Clear all client-side authentication data
         dispatch({ type: 'DELETE_USER' });
-        localStorage.clear(); // Clear all localStorage items
-        sessionStorage.clear(); // Clear all sessionStorage items as well
+        localStorage.clear();
+        sessionStorage.clear(); 
         setSuccess(data.data.message || 'Profile deleted successfully!');
 
         // Short delay before navigation to ensure state updates

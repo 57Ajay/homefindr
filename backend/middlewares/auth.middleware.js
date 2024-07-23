@@ -7,8 +7,8 @@ config();
 const verifyToken = async (req, res, next) => {
     let token;
 
-    console.log('Cookies:', req.cookies);
-    console.log('Authorization header:', req.header('Authorization'));
+    // console.log('Cookies:', req.cookies);
+    // console.log('Authorization header:', req.header('Authorization'));
 
     if (req.cookies && req.cookies.accessToken) {
         token = req.cookies.accessToken;
@@ -21,7 +21,7 @@ const verifyToken = async (req, res, next) => {
         token = req.query.token;
     }
 
-    console.log('Extracted token:', token);
+    // console.log('Extracted token:', token);
 
     if (!token) {
         return next(new ApiError("Unauthorized - No token provided", 401));
@@ -33,7 +33,7 @@ const verifyToken = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        console.log('Decoded token:', decoded);
+        // console.log('Decoded token:', decoded);
 
         const user = await User.findById(decoded._id).select('-password -refreshToken');
         if (!user) {
