@@ -9,6 +9,13 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+        lowercase: true,
+        validate: {
+            validator: function(value) {
+              return /^[a-z0-9]+$/.test(value); // Allow only lowercase letters and numbers
+            },
+            message: 'Username must contain only lowercase letters and numbers'
+          }
     },
 
     password: {
@@ -19,6 +26,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
+        lowercase: true
     },
     avatar: {
         type: String,
