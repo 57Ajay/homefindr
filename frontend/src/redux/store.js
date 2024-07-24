@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
 });
 
 const persistConfig = {
-    key: 'root',  // Changed to lowercase 'key'
+    key: 'root',  
     storage,
     version: 1
 };

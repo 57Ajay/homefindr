@@ -179,7 +179,33 @@ const google = asyncHandler(async (req, res, next) => {
             delete safeUser.password;
             delete safeUser.refreshToken;
 
-            return res.status(201).json(new ApiResponse("User created successfully", safeUser, 201));
+            // trying to generate access and refresh Tokens along with user's login with
+            // google;
+            const newUserUsername = safeUser.username;
+            const newUserEmail = safeUser.email
+            const newlyCreatedUser = await User.findOne({$or:[{newUserUsername}, {newUserEmail}]}).select("-password");
+            console.log("newlyCreatedUser: \n",newlyCreatedUser);
+            const newlyCreatedUserId = newlyCreatedUser._id;
+            if (newlyCreatedUser){
+                const { accessToken, refreshToken } = generateAccessAndRefreshToken(newlyCreatedUserId);
+                const cookieOptions = {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production', 
+                    sameSite: 'lax',
+                    path: '/'
+                };
+                return res.status(201).cookie("accessToken", accessToken, {
+                        ...cookieOptions,
+                        maxAge: 1000 * 60 * 60 * 24, // 1 day
+                    })
+                    .cookie("refreshToken", refreshToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+                    }).json(new ApiResponse("User created successfully", safeUser, 201));
+            }else{
+                return res.status(201).json(new ApiResponse("User created successfully", safeUser, 201));
+            };
+            
         }
     } catch (error) {
         next(error);
