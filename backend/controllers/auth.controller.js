@@ -141,14 +141,21 @@ const signOut = asyncHandler(async (req, res) => {
     }
 });
 
+
 const google = asyncHandler(async (req, res, next) => {
     const { username, email, avatar } = req.body;
+
+    // Input validation
     if (!username || !email) {
-        throw new ApiError("No username or email found", 404);
+        throw new ApiError("Username and email are required", 400);
     }
-    const user = await User.findOne({ email });
+
     try {
+        // Check if user exists
+        let user = await User.findOne({ email });
+
         if (user) {
+            // Generate tokens and log in existing user
             const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id);
             const loggedInUser = await User.findById(user._id).select("-password -refreshToken");
 
@@ -166,8 +173,10 @@ const google = asyncHandler(async (req, res, next) => {
                 .cookie("refreshToken", refreshToken, {
                     ...cookieOptions,
                     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-                }).json(new ApiResponse("User signed in successfully", loggedInUser, 200));
+                })
+                .json(new ApiResponse("User signed in successfully", loggedInUser, 200));
         } else {
+            // Create new user
             const generatePassword = Math.random().toString(36).slice(-8);
             const newUser = await User.create({
                 username: username.replace(/\s+/g, '') + Math.random().toString(36).slice(-8),
@@ -175,42 +184,34 @@ const google = asyncHandler(async (req, res, next) => {
                 password: generatePassword,
                 avatar
             });
+
             const safeUser = newUser.toObject();
             delete safeUser.password;
             delete safeUser.refreshToken;
 
-            // trying to generate access and refresh Tokens along with user's login with
-            // google;
-            const newUserUsername = safeUser.username;
-            const newUserEmail = safeUser.email
-            const newlyCreatedUser = await User.findOne({$or:[{newUserUsername}, {newUserEmail}]}).select("-password");
-            console.log("newlyCreatedUser: \n",newlyCreatedUser);
-            const newlyCreatedUserId = newlyCreatedUser._id;
-            if (newlyCreatedUser){
-                const { accessToken, refreshToken } = generateAccessAndRefreshToken(newlyCreatedUserId);
-                const cookieOptions = {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production', 
-                    sameSite: 'lax',
-                    path: '/'
-                };
-                return res.status(201).cookie("accessToken", accessToken, {
-                        ...cookieOptions,
-                        maxAge: 1000 * 60 * 60 * 24, // 1 day
-                    })
-                    .cookie("refreshToken", refreshToken, {
+            // Generate tokens and log in new user
+            const { accessToken, refreshToken } = await generateAccessAndRefreshToken(newUser._id);
+            const cookieOptions = {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                path: '/'
+            };
+
+            return res.status(201)
+                .cookie("accessToken", accessToken, {
+                    ...cookieOptions,
+                    maxAge: 1000 * 60 * 60 * 24, // 1 day
+                })
+                .cookie("refreshToken", refreshToken, {
                     ...cookieOptions,
                     maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-                    }).json(new ApiResponse("User created successfully", safeUser, 201));
-            }else{
-                return res.status(201).json(new ApiResponse("User created successfully", safeUser, 201));
-            };
-            
+                })
+                .json(new ApiResponse("User created successfully", safeUser, 201));
         }
     } catch (error) {
         next(error);
     }
 });
-
 
 export {signup, signIn, signOut, google, generateAccessAndRefreshToken};
