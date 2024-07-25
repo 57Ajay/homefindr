@@ -4,11 +4,9 @@ import ApiError from '../utils/apiError';
 import { config } from 'dotenv';
 config();
 
+
 const verifyToken = async (req, res, next) => {
     let token;
-
-    // console.log('Cookies:', req.cookies);
-    // console.log('Authorization header:', req.header('Authorization'));
 
     if (req.cookies && req.cookies.accessToken) {
         token = req.cookies.accessToken;

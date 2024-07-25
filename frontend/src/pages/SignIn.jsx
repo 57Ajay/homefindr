@@ -1,16 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice';
 import OAuth from '../components/OAuth';
 
+
 const SignIn = () => {
+    
     const dispatch = useDispatch();
-    const { loading, error } = useSelector((state) => state.user);
+    const { loading, error, currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ identifier: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
+
+    useEffect(()=>{
+        if (currentUser) {
+            return navigate("/");
+        }
+    }, [navigate, currentUser]);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });

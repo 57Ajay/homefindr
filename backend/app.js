@@ -4,7 +4,7 @@ import userRouter from "./routes/user.route";
 import cors from "cors";
 import authRouter from "./routes/auth.route";
 import cookieParser from 'cookie-parser';
-
+import listingRouter from "./routes/listing.route";
 
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack); // Log the error stack to the console for debugging
@@ -46,5 +46,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/listing", listingRouter);
 
 export { app };

@@ -2,6 +2,10 @@ import { User } from "../models/user.schema";
 import asyncHandler from "../utils/asyncHandler";
 import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+config();
+
 
 const generateAccessAndRefreshToken = async(userId)=>{
     try{
@@ -193,7 +197,7 @@ const google = asyncHandler(async (req, res, next) => {
             const { accessToken, refreshToken } = await generateAccessAndRefreshToken(newUser._id);
             const cookieOptions = {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: true,
                 sameSite: 'lax',
                 path: '/'
             };
@@ -214,4 +218,10 @@ const google = asyncHandler(async (req, res, next) => {
     }
 });
 
-export {signup, signIn, signOut, google, generateAccessAndRefreshToken};
+
+export {
+    signup,
+    signIn,
+    signOut,
+    google,
+    generateAccessAndRefreshToken, };
