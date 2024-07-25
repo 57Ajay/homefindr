@@ -2,7 +2,7 @@ import { User } from "../models/user.schema";
 import asyncHandler from "../utils/asyncHandler";
 import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
-import jwt from "jsonwebtoken";
+
 import { config } from "dotenv";
 config();
 
