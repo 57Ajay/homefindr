@@ -15,14 +15,14 @@ const regenerateAccessToken = async (req, res, next) => {
       const authHeader = req.header('Authorization');
       if (authHeader.startsWith('Bearer ')) {
         refreshToken = authHeader.substring(7);
-      }
+      };
     } else if (req.query && req.query.token) {
       refreshToken = req.query.token;
-    }
+    };
   
     if (!refreshToken) {
       return next(new ApiError("Unauthorized - No refresh token provided", 401));
-    }
+    };
   
     try {
       const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -30,7 +30,7 @@ const regenerateAccessToken = async (req, res, next) => {
       // console.log("decoded user check: \n",user);
       if (!user) {
         throw new ApiError("Unauthorized - User not found", 401);
-      }
+      };
   
       const newAccessToken = await user.generateAccessToken();
       req.user = user;
@@ -58,8 +58,8 @@ const regenerateAccessToken = async (req, res, next) => {
         return next(error);
       } else {
         return next(new ApiError("Internal Server Error", 500));
-      }
-    }
+      };
+    };
 };
 
 export default regenerateAccessToken;

@@ -98,7 +98,7 @@ const UpdateProfile = () => {
   }, [file]);
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
+    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-lg border border-slate-950">
       <h1 className="text-2xl font-semibold mb-4 text-center">Update Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -140,7 +140,7 @@ const UpdateProfile = () => {
           <input 
             type="email" 
             id="email" 
-            value={formData.email} 
+            value={formData.email}
             onChange={handleChange}
             className="w-full p-2 border rounded-md" 
           />

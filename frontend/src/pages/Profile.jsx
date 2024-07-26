@@ -9,7 +9,6 @@ const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-
   dispatch(updateUserSuccess(currentUser));
 
   if (!currentUser || !currentUser.data) {
