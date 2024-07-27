@@ -1,16 +1,34 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { useState } from 'react';
 import { app } from '../firebase';
+import { useSelector } from 'react-redux';
 
 
 const CreateListing = () => {
-    const [files, setFiles] = useState([]);
-    const [formData, setFormData] = useState({
-        imageUrls: [],
 
+    const { currentUser } = useSelector((state) => state.user)
+    console.log(currentUser);
+    const [files, setFiles] = useState([]);
+    const [imageUploadProgress, setImageUploadProgress] = useState(0);
+    const [formData, setFormData] = useState({
+        name: "",
+        description: "",
+        address: "",
+        type: "rent",
+        bedrooms: 1,
+        bathrooms: 1,
+        regularPrice: 50,
+        discountPrice: 50,
+        offer: false,
+        parking: false,
+        furnished: false,
+        imageUrls: [],
     });
+
     const [uploading, setUploading] = useState(false)
     const [imageUploadError, setImageUploadError] = useState(false);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const storeImage = async(file)=>{
         return new Promise((resolve, reject)=>{
@@ -22,6 +40,7 @@ const CreateListing = () => {
                 "state_changed",
                 (snapshot)=>{
                     const progress = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+                    setImageUploadProgress(progress);
                     console.log(`Upload is ${progress}% done`);
                 },
                 (error)=>{
@@ -69,14 +88,67 @@ const CreateListing = () => {
     };
     console.log(formData);
     
+    const handleChange = (e)=>{
+        if(e.target.id === "sale" || e.target.id === "rent"){
+            setFormData({
+                ...formData,
+                type: e.target.id
+            });
+        }
+        if(e.target.id === "parking" || e.target.id === "furnished" || e.target.id === "offer"){
+            setFormData({
+                ...formData,
+                [e.target.id]: e.target.checked
+            });
+        }
+        if(e.target.type === "number" || e.target.type === "text" || e.target.type == "textarea"){
+            setFormData({
+                ...formData,
+                [e.target.id]: e.target.value
+            });
+        }
+    };
+
+    const handleSubmit = async (e)=>{
+        e.preventDefault();
+        try {
+            setLoading(true);
+            setError(false);
+            const res = await fetch("/api/listing/create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    userRef: currentUser.data._id,
+                }),
+            });
+            const data = await res.json();
+            setLoading(false);
+            if(data.success === false){
+                setError(data.message);
+            }
+        } catch (error) {
+            setError(error.message || "Form submission failed");
+            setLoading(false);
+        }
+
+    }
+
   return (
     <main className="max-w-5xl mx-auto p-4 sm:p-6 md:p-10 bg-slate-200 rounded shadow-lg">
       <h1 className="text-xl sm:text-2xl font-bold mb-4">Create a Listing</h1>
-      <form className="space-y-4">
+      <form
+      onSubmit={handleSubmit}
+      className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
+
           <div>
             <label htmlFor="name" className="block mb-1 font-medium">Name</label>
             <input 
+            onChange={handleChange}
+            value={formData.name}
               type="text"
               placeholder="Name"
               maxLength={62}
@@ -86,9 +158,12 @@ const CreateListing = () => {
               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+
           <div>
             <label htmlFor="description" className="block mb-1 font-medium">Description</label>
             <textarea 
+            onChange={handleChange}
+            value={formData.description}
               placeholder="Description"
               maxLength={200}
               minLength={20}
@@ -97,9 +172,12 @@ const CreateListing = () => {
               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+
           <div>
             <label htmlFor="address" className="block mb-1 font-medium">Address</label>
             <input 
+            onChange={handleChange}
+            value={formData.address}
               type="text"
               placeholder="Address"
               maxLength={37}
@@ -109,33 +187,47 @@ const CreateListing = () => {
               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center">
               <input 
+              checked={formData.type==="sale"}
+              onChange={handleChange}
+              
                 type="checkbox"
                 id="sale"
                 className="w-4 h-4 bg-white border-2 border-gray-300 rounded checked:bg-blue-500 checked:border-transparent"
               />
               <label htmlFor="sale" className="ml-2">Sell</label>
             </div>
+
             <div className="flex items-center">
               <input 
+              checked={formData.type==="rent"}
+              onChange={handleChange}
                 type="checkbox"
                 id="rent"
                 className="w-4 h-4 bg-white border-2 border-gray-300 rounded checked:bg-blue-500 checked:border-transparent"
               />
+
               <label htmlFor="rent" className="ml-2">Rent</label>
             </div>
+
             <div className="flex items-center">
               <input 
+              onChange={handleChange}
+              checked={formData.parking}
                 type="checkbox"
                 id="parking"
                 className="w-4 h-4 bg-white border-2 border-gray-300 rounded checked:bg-blue-500 checked:border-transparent"
               />
               <label htmlFor="parking" className="ml-2">Parking spot</label>
             </div>
+
             <div className="flex items-center">
               <input 
+              onChange={handleChange}
+              checked={formData.furnished}
                 type="checkbox"
                 id="furnished"
                 className="w-4 h-4 bg-white border-2 border-gray-300 rounded checked:bg-blue-500 checked:border-transparent"
@@ -144,17 +236,22 @@ const CreateListing = () => {
             </div>
             <div className="flex items-center">
               <input 
+              onChange={handleChange}
+              checked={formData.offer}
                 type="checkbox"
                 id="offer"
                 className="w-4 h-4 bg-white border-2 border-gray-300 rounded checked:bg-blue-500 checked:border-transparent"
               />
               <label htmlFor="offer" className="ml-2">Offer</label>
             </div>
+
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div>
               <label htmlFor="bedrooms" className="block mb-1 font-medium">Beds</label>
-              <input 
+              <input
+              onChange={handleChange} 
+              value={formData.bedrooms}
                 type="number"
                 id="bedrooms"
                 min={1}
@@ -163,9 +260,12 @@ const CreateListing = () => {
                 className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
+
             <div>
               <label htmlFor="bathrooms" className="block mb-1 font-medium">Baths</label>
               <input 
+              onChange={handleChange}
+              value={formData.bathrooms}
                 type="number"
                 id="bathrooms"
                 min={1}
@@ -180,16 +280,21 @@ const CreateListing = () => {
                 <span className="text-sm ml-1">($ / month)</span>
               </label>
               <input 
+              onChange={handleChange}
+              value={formData.regularPrice}
                 type="number"
                 id="regularPrice"
-                min={1}
+                min={50}
                 required
                 className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
+
             <div>
               <label htmlFor="discountPrice" className="block mb-1 font-medium">Discounted Price</label>
               <input 
+              onChange={handleChange}
+              value={formData.discountPrice}
                 type="number"
                 id="discountPrice"
                 min={0}
@@ -199,7 +304,9 @@ const CreateListing = () => {
             </div>
           </div>
         </div>
+
         <div>
+
           <p className="font-medium mb-2">Images: <span className="text-sm font-normal">The first image will be the cover (max 6)</span></p>
           <div className="flex flex-col sm:flex-row gap-2">
             <input 
@@ -211,6 +318,11 @@ const CreateListing = () => {
               multiple
               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
+            {uploading &&
+                <p className='text-amber-500 text-sm'>
+                    Upload is {imageUploadProgress}% done
+                </p>
+            }
             <button 
             onClick={handleImageSubmit}
             disabled={uploading}
@@ -220,7 +332,10 @@ const CreateListing = () => {
             </button>
           </div>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-950 text-white font-bold py-3 px-4 rounded w-full transition duration-300 ease-in-out">Create Listing</button>
+        <button className="bg-blue-600 hover:bg-blue-950 text-white font-bold py-3 px-4 rounded w-full transition duration-300 ease-in-out">
+            {loading ? "Creating..." : "Create listing"}
+        </button>
+        {error && <p className="text-red-700 text-sm">{error.message}</p>}
         <p className='text-red-600'>{imageUploadError && imageUploadError}</p>
         
             {
