@@ -2,12 +2,12 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import { useState } from 'react';
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
-
+import { useNavigate } from 'react-router-dom';
 
 const CreateListing = () => {
 
     const { currentUser } = useSelector((state) => state.user)
-    console.log(currentUser);
+    // console.log(currentUser);
     const [files, setFiles] = useState([]);
     const [imageUploadProgress, setImageUploadProgress] = useState(0);
     const [formData, setFormData] = useState({
@@ -18,7 +18,7 @@ const CreateListing = () => {
         bedrooms: 1,
         bathrooms: 1,
         regularPrice: 50,
-        discountPrice: 50,
+        discountPrice: 0,
         offer: false,
         parking: false,
         furnished: false,
@@ -29,6 +29,7 @@ const CreateListing = () => {
     const [imageUploadError, setImageUploadError] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const storeImage = async(file)=>{
         return new Promise((resolve, reject)=>{
@@ -81,12 +82,13 @@ const CreateListing = () => {
     };
     
     const handleRemoveImage = (index) => {
+        
         setFormData({
             ...formData,
             imageUrls: formData.imageUrls.filter((_, i) => i !== index)
         });
     };
-    console.log(formData);
+    // console.log(formData);
     
     const handleChange = (e)=>{
         if(e.target.id === "sale" || e.target.id === "rent"){
@@ -107,11 +109,17 @@ const CreateListing = () => {
                 [e.target.id]: e.target.value
             });
         }
+        
     };
+
+   
 
     const handleSubmit = async (e)=>{
         e.preventDefault();
         try {
+            if(formData.imageUrls.length < 1) return setError("Upload at least one image");
+            if(+formData.regularPrice < +formData.discountPrice) return setError("Discount Price should be less than Regular Price");
+
             setLoading(true);
             setError(false);
             const res = await fetch("/api/listing/create", {
@@ -129,6 +137,7 @@ const CreateListing = () => {
             if(data.success === false){
                 setError(data.message);
             }
+            navigate(`/listing/${data.data._id}`)
         } catch (error) {
             setError(error.message || "Form submission failed");
             setLoading(false);
@@ -289,19 +298,22 @@ const CreateListing = () => {
                 className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-
-            <div>
-              <label htmlFor="discountPrice" className="block mb-1 font-medium">Discounted Price</label>
-              <input 
-              onChange={handleChange}
-              value={formData.discountPrice}
-                type="number"
-                id="discountPrice"
-                min={0}
-                required
-                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+            
+            {formData.offer &&
+                <div>
+                    <label htmlFor="discountPrice" className="block mb-1 font-medium">Discounted Price</label>
+                    <input 
+                    onChange={handleChange}
+                    value={formData.discountPrice}
+                    type="number"
+                    id="discountPrice"
+                    min={0}
+                    required
+                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+              </div>
+            }
+            
           </div>
         </div>
 
@@ -320,7 +332,7 @@ const CreateListing = () => {
             />
             {uploading &&
                 <p className='text-amber-500 text-sm'>
-                    Upload is {imageUploadProgress}% done
+                    Upload is {Math.floor(imageUploadProgress)}% done
                 </p>
             }
             <button 
@@ -332,10 +344,10 @@ const CreateListing = () => {
             </button>
           </div>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-950 text-white font-bold py-3 px-4 rounded w-full transition duration-300 ease-in-out">
+        <button disabled={loading} className="bg-blue-600 hover:bg-blue-950 text-white font-bold py-3 px-4 rounded w-full transition duration-300 ease-in-out">
             {loading ? "Creating..." : "Create listing"}
         </button>
-        {error && <p className="text-red-700 text-sm">{error.message}</p>}
+        {error && <p className="text-red-700 text-sm font-semibold">{error}</p>}
         <p className='text-red-600'>{imageUploadError && imageUploadError}</p>
         
             {
