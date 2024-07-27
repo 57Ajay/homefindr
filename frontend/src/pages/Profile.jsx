@@ -68,12 +68,20 @@ const Profile = () => {
             Update Profile
           </Link>
           
+          <Link to="/create-listing"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            <LogOut className="w-5 h-5 mr-2" />
+            Create Listing
+          </Link>
+
           <Link to="/sign-out"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
             <LogOut className="w-5 h-5 mr-2" />
             Sign Out
           </Link>
+
           <Link to="/delete-account"
             className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
