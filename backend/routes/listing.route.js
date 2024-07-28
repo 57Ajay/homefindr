@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createListing } from "../controllers/listing.controller";
+import { createListing, deleteListing } from "../controllers/listing.controller";
 import verifyToken from "../middlewares/auth.middleware";
 const listingRouter = Router();
 
@@ -8,6 +8,6 @@ listingRouter.get("/", (req, res)=>{
 });
 
 listingRouter.post("/create", verifyToken, createListing);
-
+listingRouter.delete("/delete:id", verifyToken, deleteListing);
 
 export default listingRouter;

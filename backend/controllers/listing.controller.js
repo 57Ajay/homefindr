@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler";
 import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
 import { Listing } from "../models/listing.schema";
+
 const createListing = asyncHandler(async(req, res)=>{
     try {
         const listing = await Listing.create(req.body);
@@ -14,4 +15,8 @@ const createListing = asyncHandler(async(req, res)=>{
     };
 });
 
-export { createListing };
+const deleteListing = asyncHandler(async(req, res)=>{
+    
+})
+
+export { createListing, deleteListing };

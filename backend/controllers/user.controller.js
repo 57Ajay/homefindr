@@ -4,6 +4,7 @@ import ApiError from "../utils/apiError";
 import ApiResponse from "../utils/apiResponse";
 import bcrypt from 'bcrypt';
 import { generateAccessAndRefreshToken } from "./auth.controller"
+import { Listing } from "../models/listing.schema";
 
 const updateUserProfile = asyncHandler(async (req, res) => {
     const { username, email, avatar, password } = req.body;
@@ -46,7 +47,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         updatedUser, 200));
   });
 
-const deleteUserAccount = asyncHandler(async(req, res, next)=>{
+const deleteUserAccount = asyncHandler(async(req, res)=>{
     try {
         const userId = req.user._id;
     
@@ -64,8 +65,25 @@ const deleteUserAccount = asyncHandler(async(req, res, next)=>{
 
     } catch (error) {
         console.error('Error deleting profile:', error);
-        next(new ApiError('Internal Server Error', 500));
+        throw new ApiError('Internal Server Error' || error.message, 500);
     }
 });
 
-export {updateUserProfile, deleteUserAccount};
+const getUserListings = asyncHandler(async(req, res)=>{
+  // console.log("req.user._id:\n", req.user._id, "\n", "req.params.id:\n", req.params.id)
+  if(req.user._id == req.params.id){
+    try {
+      const listings = await Listing.find({userRef: req.params.id});
+      res.status(201).json(
+        new ApiResponse("Listings fetched successfully", listings, 201)
+      );
+
+    } catch (error) {
+      throw new ApiError("Can not get listings", 404, error.message)
+    }
+  }else{
+    throw new ApiError("you can only view your own listings", 401)
+  }
+});
+
+export {updateUserProfile, deleteUserAccount, getUserListings};

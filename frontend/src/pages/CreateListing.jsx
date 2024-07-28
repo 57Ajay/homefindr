@@ -29,6 +29,7 @@ const CreateListing = () => {
     const [imageUploadError, setImageUploadError] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    
     const navigate = useNavigate();
 
     const storeImage = async(file)=>{
