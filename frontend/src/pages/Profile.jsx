@@ -180,9 +180,11 @@ const Profile = () => {
                 <button onClick={()=>handleDeleteListing(index)} type='button' className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
                   Delete
                 </button>
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
-                  Edit
-                </button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
+                    Edit
+                  </button>
+                </Link>
                 <Link to={`/listing/${listing._id}`}>
                   <button className="bg-green-500 hover:bg-green-950 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out">
                     View Listing

@@ -161,8 +161,8 @@ const CreateListing = () => {
             value={formData.name}
               type="text"
               placeholder="Name"
-              maxLength={62}
-              minLength={10}
+              maxLength={60}
+              minLength={7}
               id="name"
               required
               className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -175,7 +175,7 @@ const CreateListing = () => {
             onChange={handleChange}
             value={formData.description}
               placeholder="Description"
-              maxLength={200}
+              maxLength={500}
               minLength={20}
               id="description"
               required

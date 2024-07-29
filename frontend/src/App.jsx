@@ -10,6 +10,8 @@ import VerifyAuth from "./components/VerifyAuth";
 import UpdateProfile from "./pages/UpdateProfile";
 import DeleteUserProfile from "./pages/DeleteUserProfile";
 import CreateListing from "./pages/CreateListing";
+import UpdateListing from "./pages/UpdateListing";
+import ListingInfo from "./pages/ListingInfo";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
         <Route path="/delete-account" element={<VerifyAuth><DeleteUserProfile /></VerifyAuth>} />
         <Route path="/sign-out" element={<VerifyAuth><SignOut /></VerifyAuth>} />
         <Route path="/create-listing" element={<VerifyAuth><CreateListing /></VerifyAuth>} />
+        <Route path="/update-listing/:listingId" element={<VerifyAuth><UpdateListing /></VerifyAuth>} />
+        <Route path="/listing/:listingId" element={<ListingInfo />} />
       </Routes>
     </BrowserRouter>
   )
