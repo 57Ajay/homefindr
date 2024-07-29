@@ -16,7 +16,31 @@ const createListing = asyncHandler(async(req, res)=>{
 });
 
 const deleteListing = asyncHandler(async(req, res)=>{
-    
-})
+    try {
+        const userId = req.user._id;
+        const listingId = req.params.id;
+        console.log("userId:\n", userId, "\nlistingId:\n", listingId);
+        const listing = await Listing.findById(listingId);
+        if (!listing){
+            return res.json(
+                new ApiResponse("Can not find Listing", null, 404)
+            )
+        };
+        console.log("userRef:\n", listing.userRef)
+        if (listing.userRef !== userId.toString()){
+            return res.json(
+                new ApiResponse("You are not authorized to delete this listing", null, 403)
+            )
+        };
+        await listing.deleteOne();
+        return res.json(
+            new ApiResponse("Listing deleted SuccessFully", [], 200)
+        );
+
+    } catch (error) {
+        throw new ApiError(error.message || "Can not delete Listing", 404)
+    }
+
+});
 
 export { createListing, deleteListing };

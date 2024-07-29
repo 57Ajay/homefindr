@@ -8,6 +8,5 @@ listingRouter.get("/", (req, res)=>{
 });
 
 listingRouter.post("/create", verifyToken, createListing);
-listingRouter.delete("/delete:id", verifyToken, deleteListing);
-
+listingRouter.delete("/delete/:id", verifyToken, deleteListing);
 export default listingRouter;
