@@ -91,6 +91,7 @@ const getListing = asyncHandler(async(req, res)=>{
         if (!listing){
             throw new ApiError("No listing found", 404)
         };
+        console.log("Fetched listing:", listing);
         return res.status(200).json(
             new ApiResponse("Listing fetched SuccessFully", listing, 200)
         )
