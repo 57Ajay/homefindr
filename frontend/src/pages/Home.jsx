@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
-import Listings from './Listings';
+
 
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      <Listings />
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Welcome Home

@@ -14,6 +14,7 @@ const Search = () => {
     parking: false,
     type: 'all',
   });
+//   const [limit, setLimit]= useState(6);
   const [sort, setSort] = useState('createdAt');
   const [order, setOrder] = useState('desc');
 
@@ -72,6 +73,18 @@ const Search = () => {
       ...prevFilters,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const onClickShowMore = async () => {
+    const totalListings = listings.length;
+    const startIndex = totalListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    urlParams.set("limit", 6); 
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json(); // Add await here
+    setListings([...listings, ...data.data]); // Update the listings state
   };
 
   return (
@@ -146,10 +159,11 @@ const Search = () => {
               </select>
             </div>
           </div>
-
-          <button type="submit" className="w-full bg-blue-500 text-white px-4 py-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out">
-            Search
-          </button>
+            
+            <button type="submit" className="w-full bg-blue-500 text-zinc-100 px-4 py-3 rounded-md hover:bg-blue-600 transition duration-300 ease-in-out font-bold">
+                Search
+            </button>
+          
         </form>
 
         {loading ? (
@@ -174,11 +188,17 @@ const Search = () => {
                       {listing.type}
                     </span>
                   </div>
+                  
+                  <button onClick={()=> navigate(`/listing/${listing._id}`)} className='p-3 bg-blue-800 rounded-lg mt-3 text-center w-full font-bold text-zinc-300'>View Property</button>
+                
                 </div>
               </div>
             ))}
           </div>
         )}
+        <button onClick={onClickShowMore} className='bg-green-950 p-3 rounded-lg w-full text-zinc-50 font-bold'>
+            Show more
+        </button>
       </div>
     </div>
   );
