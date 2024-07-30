@@ -1,12 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { Home, ParkingCircle, Bed, Bath, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import Contact from '../components/Contact';
 
 const ListingInfo = () => {
+  const { currentUser } = useSelector((state)=> state.user);
   const params = useParams();
   const [listingDetails, setListingDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [contact, setContact] = useState(false);
 
   const fetchListing = useCallback(async () => {
     setLoading(true);
@@ -73,6 +77,10 @@ const ListingInfo = () => {
   }
 
   if (!listingDetails) return null;
+  const userRef = listingDetails.userRef;
+  const userId = currentUser.data._id
+  // console.log("listing UserRef:\n",userRef);
+  // console.log("UserId:\n", userId)
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-8 animate-fadeIn">
@@ -181,6 +189,19 @@ const ListingInfo = () => {
           </div>
         </div>
       </div>
+      {
+        userRef === userId ? (null): (
+          (!contact) &&
+          (<div>
+            <button onClick={()=>setContact(true)} className='p-3 bg-cyan-900 font-semibold rounded-md'>
+              Contact Landlord
+            </button>
+          </div>)
+        )
+      }
+      {
+        contact && <Contact listing={listingDetails} />
+      }
     </div>
   );
 };

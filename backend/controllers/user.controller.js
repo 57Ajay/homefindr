@@ -87,4 +87,24 @@ const getUserListings = asyncHandler(async(req, res)=>{
   }
 });
 
-export {updateUserProfile, deleteUserAccount, getUserListings};
+const getUser = asyncHandler(async(req, res)=>{
+  try {
+    const userId = req.params.id;
+    if(!userId){
+      throw new ApiError("No userId found", 404)
+    };
+    const user = await User.findById(userId).select("-password -refreshToken");
+    if (!user){
+      throw new ApiError("User not found", 404)
+    };
+    return res.status(200).json(
+      new ApiResponse("user fetched successfully", user, 200)
+    )
+  } catch (error) {
+    throw new ApiError(error.message || "Cannot get the user, try again later", 404)
+  }
+});
+
+
+export {
+  updateUserProfile, deleteUserAccount, getUserListings, getUser };
