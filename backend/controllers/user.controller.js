@@ -50,7 +50,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 const deleteUserAccount = asyncHandler(async(req, res)=>{
     try {
         const userId = req.user._id;
-    
+        await Listing.deleteMany({ userRef: userId.toString() });
         const user = await User.findByIdAndDelete(userId);
         
         if (!user) {
@@ -60,8 +60,9 @@ const deleteUserAccount = asyncHandler(async(req, res)=>{
         return res
             .status(200)
             .clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: 'strict' })
-            .clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: 'strict' })
-            .json(new ApiResponse("User deletion success", { message: "Account deleted and logged out" }, 200));
+            .clearCookie("refreshToken", { httpOnly:
+               true, secure: true, sameSite: 'strict' })
+            .json(new ApiResponse("User deletion success", { message: "Account and associated listings deleted, user logged out" }, 200));
 
     } catch (error) {
         console.error('Error deleting profile:', error);

@@ -75,10 +75,13 @@ const CreateListing = () => {
                 setUploading(false);
             }).catch(()=>{
                 setImageUploadError("Image Upload Failed (2MB/Image max Image size)");
+                setLoading(false);
+                setUploading(false);
             });  
         }else{
             setImageUploadError("You can only upload maximum of 6 images per listing");
             setUploading(false);
+            setLoading(false);
         }
     };
     
