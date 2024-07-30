@@ -100,5 +100,58 @@ const getListing = asyncHandler(async(req, res)=>{
     }
 });
 
+const getListings = asyncHandler(async(req, res)=>{
+    try {
+        const limit = parseInt(req.query.limit) || 6;
+        const startIndex = parseInt(req.query.startIndex) || 0;
 
-export { createListing, deleteListing, updateListing, getListing };
+        let filter = {};
+
+        // Handling offer
+        if (req.query.offer === "true") {
+            filter.offer = true;
+        } else if (req.query.offer === "false") {
+            filter.offer = false;
+        }
+
+        // Handling furnished
+        if (req.query.furnished === "true") {
+            filter.furnished = true;
+        } else if (req.query.furnished === "false") {
+            filter.furnished = false;
+        }
+
+        // Handling parking
+        if (req.query.parking === "true") {
+            filter.parking = true;
+        } else if (req.query.parking === "false") {
+            filter.parking = false;
+        }
+
+        // Handling type
+        if (req.query.type && req.query.type !== "all") {
+            filter.type = req.query.type;
+        }
+
+        const searchTerm = req.query.searchTerm || "";
+
+        const sort = req.query.sort || "createdAt";
+
+        const order = req.query.order === "asc" ? 1 : -1;
+
+        const listings = await Listing.find({
+            name: { $regex: searchTerm, $options: "i" },
+            ...filter
+        }).sort({ [sort]: order }).limit(limit).skip(startIndex);
+
+        return res.status(200).json(
+            new ApiResponse("All the listings fetched", listings, 200)
+        );
+
+    } catch (error) {
+        throw new ApiError("Error getting All the listings, try again", 404);
+    }
+});
+
+
+export { createListing, deleteListing, updateListing, getListing, getListings };
