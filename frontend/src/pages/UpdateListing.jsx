@@ -160,9 +160,9 @@ const UpdateListing = () => {
     };
 
     return (
-        <main className="max-w-5xl mx-auto p-4 sm:p-6 md:p-10 bg-slate-200 rounded shadow-lg">
-            <h1 className="text-xl sm:text-2xl font-bold mb-4">Update a Listing</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
+        <main className="w-full mx-auto p-4 sm:p-6 md:p-10 font-semibold bg-slate-800 rounded shadow-lg">
+            <h1 className="text-xl sm:text-2xl font-bold mb-4 text-white mt-10">Update a Listing</h1>
+            <form onSubmit={handleSubmit} className="space-y-4 text-white">
                 <div className="grid grid-cols-1 gap-4">
                     <div>
                         <label htmlFor="name" className="block mb-1 font-medium">Name</label>
@@ -174,7 +174,7 @@ const UpdateListing = () => {
                             maxLength={60}
                             minLength={7}
                             id="name"
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                     </div>
 
@@ -187,7 +187,7 @@ const UpdateListing = () => {
                             maxLength={500}
                             minLength={20}
                             id="description"
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                     </div>
 
@@ -201,7 +201,7 @@ const UpdateListing = () => {
                             maxLength={37}
                             minLength={3}
                             id="address"
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                     </div>
 
@@ -259,7 +259,7 @@ const UpdateListing = () => {
                                 value={formData.bedrooms}
                                 type="number"
                                 id="bedrooms"
-                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                             />
                         </div>
 
@@ -270,7 +270,7 @@ const UpdateListing = () => {
                                 value={formData.bathrooms}
                                 type="number"
                                 id="bathrooms"
-                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                             />
                         </div>
                     </div>
@@ -285,7 +285,7 @@ const UpdateListing = () => {
                             maxLength={50}
                             minLength={0}
                             id="regularPrice"
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                     </div>
 
@@ -300,7 +300,7 @@ const UpdateListing = () => {
                                 maxLength={50}
                                 minLength={0}
                                 id="discountPrice"
-                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                             />
                         </div>
                     )}

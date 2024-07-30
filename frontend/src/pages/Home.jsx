@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+ 
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,15 +40,17 @@ const Home = () => {
         ))}
       </div>
       <div className="text-center p-4">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+        <h1 className="text-4xl font-bold text-gray-400 mb-4">
           Welcome{currentUser ? `, ${currentUser.data.username}` : ''}!
         </h1>
-        <p className="text-gray-600 text-lg leading-relaxed mb-6">
+        <p className="text-gray-300 text-lg leading-relaxed mb-6">
           HomeFindr is your premier destination for finding the perfect home. Explore our listings and find your dream property today.
         </p>
+        <Link to={"/listings"}>
         <button className="p-3 bg-blue-600 hover:bg-blue-700 font-semibold rounded-md text-white transition duration-300">
           Explore Listings
         </button>
+        </Link>
       </div>
     </div>
   );

@@ -150,11 +150,11 @@ const CreateListing = () => {
     }
 
   return (
-    <main className="max-w-5xl mx-auto p-4 sm:p-6 md:p-10 bg-slate-200 rounded shadow-lg">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4">Create a Listing</h1>
+    <main className="w-full h-screen mx-auto p-4 sm:p-6 md:p-10 bg-slate-950 text-white rounded shadow-lg">
+      <h1 className="text-xl sm:text-2xl font-bold mb-4 mt-10 text-center">Create a Listing</h1>
       <form
       onSubmit={handleSubmit}
-      className="space-y-4">
+      className="space-y-4 text-white font-semibold">
         <div className="grid grid-cols-1 gap-4">
 
           <div>
@@ -168,7 +168,7 @@ const CreateListing = () => {
               minLength={7}
               id="name"
               required
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
             />
           </div>
 
@@ -182,7 +182,7 @@ const CreateListing = () => {
               minLength={20}
               id="description"
               required
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
             />
           </div>
 
@@ -197,7 +197,7 @@ const CreateListing = () => {
               minLength={3}
               id="address"
               required
-              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
             />
           </div>
 
@@ -270,7 +270,7 @@ const CreateListing = () => {
                 min={1}
                 max={10}
                 required
-                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               />
             </div>
 
@@ -284,7 +284,7 @@ const CreateListing = () => {
                 min={1}
                 max={10}
                 required
-                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               />
             </div>
             <div>
@@ -299,7 +299,7 @@ const CreateListing = () => {
                 id="regularPrice"
                 min={50}
                 required
-                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               />
             </div>
             

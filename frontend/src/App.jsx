@@ -13,6 +13,8 @@ import CreateListing from "./pages/CreateListing";
 import UpdateListing from "./pages/UpdateListing";
 import ListingInfo from "./pages/ListingInfo";
 import Search from "./pages/Search";
+import Listings from "./pages/Listings";
+
 
 const App = () => {
   return (
@@ -31,6 +33,7 @@ const App = () => {
         <Route path="/create-listing" element={<VerifyAuth><CreateListing /></VerifyAuth>} />
         <Route path="/update-listing/:listingId" element={<VerifyAuth><UpdateListing /></VerifyAuth>} />
         <Route path="/listing/:listingId" element={<ListingInfo />} />
+        <Route path="/listings" element={<Listings />}/>
       </Routes>
     </BrowserRouter>
   )

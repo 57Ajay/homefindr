@@ -84,11 +84,11 @@ const Header = () => {
             </button>
           </form>
           <ul className="flex gap-6 items-center">
-            <Link to="/" className="items-center text-slate-700 hover:text-blue-600 transition-all duration-300 hidden sm:flex">
+            <Link to="/" className="items-center text-white bg-black/50 p-3 rounded-full hover:text-blue-600 transition-all duration-300 hidden sm:flex">
               <FaHome className="mr-1" />
               <span className="font-medium">Home</span>
             </Link>
-            <Link to="/about" className="items-center text-slate-700 hover:text-blue-600 transition-all duration-300 hidden sm:flex">
+            <Link to="/about" className="items-center text-white bg-black/50 p-3 rounded-full hover:text-blue-600 transition-all duration-300 hidden sm:flex">
               <FaInfoCircle className="mr-1" />
               <span className="font-medium">About</span>
             </Link>

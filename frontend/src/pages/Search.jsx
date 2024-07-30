@@ -88,9 +88,9 @@ const Search = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className=" min-h-screen bg-slate-950">
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-gray-800">Find Your Perfect Home</h1>
+        <h1 className="text-4xl font-bold mb-8 text-gray-500 mt-10 text-center">Find Your Perfect Home</h1>
         
         <form onSubmit={handleSearchSubmit} className="bg-white shadow-md rounded-lg p-6 mb-8">
           <div className="flex flex-wrap -mx-2 mb-4">
@@ -196,7 +196,7 @@ const Search = () => {
             ))}
           </div>
         )}
-        <button onClick={onClickShowMore} className='bg-green-950 p-3 rounded-lg w-full text-zinc-50 font-bold'>
+        <button onClick={onClickShowMore} className='bg-green-950 p-3 rounded-lg w-full text-zinc-50 font-bold mt-5'>
             Show more
         </button>
       </div>

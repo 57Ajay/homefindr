@@ -86,7 +86,7 @@ const Contact = ({ listing }) => {
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
-                                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <label htmlFor="message" className="block text-2xl font-semibold text-center text-gray-700 mb-2">
                                         Message
                                     </label>
                                     <textarea

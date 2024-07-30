@@ -21,7 +21,7 @@ const Profile = () => {
 
   if (loadingUser) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center min-h-screen bg-slate-700">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -70,9 +70,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-950 from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto mt-10">
-        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+        <div className="bg-slate-700 shadow-xl rounded-2xl overflow-hidden">
           <div className="px-6 py-8 sm:p-10 bg-gradient-to-r from-blue-600 to-indigo-600">
             <h3 className="text-2xl font-bold text-white">User Profile</h3>
           </div>
@@ -162,7 +162,7 @@ const Profile = () => {
 
         {userListings.length > 0 && (
           <div className="mt-12">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Your Listings</h3>
+            <h3 className="text-2xl font-bold text-gray-200 mb-6">Your Listings</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {userListings.map((listing, index) => (
                 <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1">

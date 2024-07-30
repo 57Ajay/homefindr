@@ -59,11 +59,11 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white rounded-3xl shadow-2xl p-10 transition-all duration-300 hover:shadow-3xl">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md w-full space-y-8 bg-slate-700 rounded-3xl shadow-2xl p-10 transition-all duration-300 hover:shadow-3xl">
                 <div>
                     <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-2">Create an Account</h1>
-                    <p className="text-center text-gray-600 text-lg">Join our community today!</p>
+                    <p className="text-center text-gray-200 text-lg">Join our community today!</p>
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -172,7 +172,7 @@ const SignUp = () => {
                 </div>
 
                 <div className="text-center mt-4">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-200">
                         Already have an account?{' '}
                         <Link to="/sign-in" className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors duration-300">
                             Sign in

@@ -35,7 +35,7 @@ const SignOut = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900">
             <div className="p-8 bg-white rounded-lg shadow-md">
                 <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
                     Are you sure you want to sign out?

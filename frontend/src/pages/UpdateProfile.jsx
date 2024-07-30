@@ -98,7 +98,7 @@ const UpdateProfile = () => {
   }, [file]);
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-lg border border-slate-950">
+    <div className="max-w-lg mx-auto mt-20 p-6 bg-slate-900  rounded-md shadow-lg border border-slate-950">
       <h1 className="text-2xl font-semibold mb-4 text-center">Update Profile</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -125,7 +125,7 @@ const UpdateProfile = () => {
         </div>
 
         <div>
-          <label htmlFor="username" className="block text-gray-700">Username</label>
+          <label htmlFor="username" className="block text-gray-200">Username</label>
           <input 
             type="text" 
             id="username" 
@@ -136,7 +136,7 @@ const UpdateProfile = () => {
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-gray-700">Email</label>
+          <label htmlFor="email" className="block text-gray-200">Email</label>
           <input 
             type="email" 
             id="email" 
@@ -147,7 +147,7 @@ const UpdateProfile = () => {
         </div>
 
         <div className='relative'>
-          <label htmlFor="password" className="block text-gray-700">New Password (optional)</label>
+          <label htmlFor="password" className="block text-gray-200">New Password (optional)</label>
           <input 
             type={showPassword ? "text" : "password"}
             id="password" 

@@ -110,7 +110,7 @@ const ListingInfo = () => {
         </button>
       </div>
 
-      <h1 className="text-5xl font-bold text-gray-800 mb-6">{listingDetails.name}</h1>
+      <h1 className="text-5xl font-bold text-gray-300 mb-6">{listingDetails.name}</h1>
       
       <div className="bg-white shadow-2xl rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
         <div className="p-8">
@@ -193,7 +193,7 @@ const ListingInfo = () => {
         userRef === userId ? (null): (
           (!contact) &&
           (<div>
-            <button onClick={()=>setContact(true)} className='p-3 bg-cyan-900 font-semibold rounded-md'>
+            <button onClick={()=>setContact(true)} className='p-3 bg-cyan-900 font-semibold rounded-md w-full text-center shadow-lg'>
               Contact Landlord
             </button>
           </div>)

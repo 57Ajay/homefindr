@@ -56,8 +56,8 @@ const SignIn = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="flex justify-center items-center min-h-screen bg-slate-950">
+            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md bg-slate-500">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Welcome Back</h2>
                 {error && (
                     <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg" role="alert">
@@ -141,7 +141,7 @@ const SignIn = () => {
                     </div>
                 </div>
                 <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-200 font-semibold">
                         Don`t have an account?{' '}
                         <Link to="/sign-up" className="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">
                             Sign up

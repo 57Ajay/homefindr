@@ -49,9 +49,10 @@ const DeleteUserProfile = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-10 p-6 bg-white rounded-md shadow-md">
-      <h1 className="text-2xl font-semibold mb-4">Delete Profile</h1>
+    <div className="max-w-lg mx-auto mt-20 p-6 bg-slate-950 rounded-md shadow-md">
+      <h1 className="text-2xl font-semibold mb-4 text-white">Delete Profile</h1>
       <p className="text-red-700 mb-4">This action cannot be undone. Are you sure you want to proceed?</p>
+      <p className='font-bold text-red-800 mb-3'> You will loose all your listings and data</p>
       <button 
         onClick={handleDelete} 
         disabled={loading}
