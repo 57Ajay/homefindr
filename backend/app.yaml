@@ -1,0 +1,19 @@
+runtime: nodejs20  # Specify a compatible Node.js version
+instance_class: F1  # Instance class, adjust based on your needs
+env: standard  # Use the standard environment
+entrypoint: bun index.js  # Command to run your Bun application
+
+handlers:
+- url: /.*
+  script: auto
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 5
+
+env_variables:
+  NODE_ENV: 'production'
+  # Add other environment variables here, for example:
+  # DATABASE_URL: 'your-database-url'
+  # JWT_SECRET: 'your-jwt-secret'
